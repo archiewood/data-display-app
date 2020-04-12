@@ -16,8 +16,18 @@ def load_graph():
     df['std'] = df['light_reading'].rolling(avg_window).std()
     df = df[(df.light_reading <= df['median']+3*df['std']) & (df.light_reading >= df['median']-3*df['std'])]
     df['light_reading_moving_avg'] = df.iloc[:,1].rolling(window=avg_window).mean()
+    
+    df['hour']=df['timestamp'].str[11:13].astype(float)
+    df['minute']=df['timestamp'].str[14:16].astype(float)
+    df['minute_interval']=df['minute'].floordiv(6)
+    df['hour-decimal']=df['hour']+df['minute_interval']/10
+    df['date']=df['timestamp'].str[:10]
+    
+    piv=df.pivot_table(index=['hour-decimal','date'],values='light_reading_moving_avg').reset_index()
+    
+    fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0,100],title='Balcony Light Intensity')
+    
 
-    fig =px.line(df,x='timestamp',y='light_reading_moving_avg',title='Balcony Light Intensity',range_y=[0,100])
     
     return html.Div([dcc.Graph(figure=fig)])
 
