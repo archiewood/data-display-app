@@ -1,63 +1,32 @@
+import pandas as pd
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import plotly.graph_objs as go
+from dash.dependencies import Input, Output
 
-########### Define your variables
-beers=['Chesapeake Stout', 'Snake Dog IPA', 'Imperial Porter', 'Double Dog IPA']
-ibu_values=[35, 60, 85, 75]
-abv_values=[5.4, 7.1, 9.2, 4.3]
-color1='lightblue'
-color2='darkgreen'
-mytitle='Beer Comparison'
-tabtitle='beer!'
-myheading='Flying Dog Beers'
-label1='IBU'
-label2='ABV'
-githublink='https://github.com/austinlasseter/flying-dog-beers'
-sourceurl='https://www.flyingdog.com/beers/'
+csv = 'https://raw.githubusercontent.com/archiewood/lightlogger/master/lightlog.csv'
+df = pd.read_csv(csv)
+df['date']=df['timestamp'].str[:10]
+df['time']=df['timestamp'].str[10:19]
+df.head()
 
-########### Set up the chart
-bitterness = go.Bar(
-    x=beers,
-    y=ibu_values,
-    name=label1,
-    marker={'color':color1}
-)
-alcohol = go.Bar(
-    x=beers,
-    y=abv_values,
-    name=label2,
-    marker={'color':color2}
-)
-
-beer_data = [bitterness, alcohol]
-beer_layout = go.Layout(
-    barmode='group',
-    title = mytitle
-)
-
-beer_fig = go.Figure(data=beer_data, layout=beer_layout)
-
-
-########### Initiate the app
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__)
 server = app.server
-app.title=tabtitle
 
-########### Set up the layout
-app.layout = html.Div(children=[
-    html.H1(myheading),
-    dcc.Graph(
-        id='flyingdog',
-        figure=beer_fig
-    ),
-    html.A('Code on Github', href=githublink),
-    html.Br(),
-    html.A('Data Source', href=sourceurl),
-    ]
+dates=df['date'].unique()
+
+app.layout = html.Div([
+    html.Div([dcc.Dropdown(id='date-select', options=[{'label': i, 'value': i} for i in dates],
+                           value='TOR', style={'width': '140px'})]),
+    dcc.Graph('light-graph', config={'displayModeBar': False})])
+
+@app.callback(
+    Output('light-graph', 'figure'),
+    [Input('date-select','value')]
 )
+def update_graph(grpname):
+    import plotly.express as px
+    return px.line(df,x='time',y='light_reading',color='date')
 
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=False)
