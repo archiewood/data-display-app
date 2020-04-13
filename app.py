@@ -1,10 +1,3 @@
-import pandas as pd
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import Input, Output
-import plotly.express as px
-
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 def load_graph(is_logged=False):
@@ -40,25 +33,28 @@ app = dash.Dash(__name__,external_stylesheets=external_stylesheets)
 server = app.server
 
 app.layout = html.Div(children=[
-    html.H1(children='Light on my Balcony',style={'textAlign': 'center'}
+    html.H1(children='Light on my Balcony',style={'textAlign': 'left'}
            ),
     html.Div(children='''
         A little web app that shows when there is light on my balcony, as measured by an LDR using a Raspberry Pi.
     
-    ''',style={'textAlign': 'center'}),
+    ''',style={'textAlign': 'left'}),
     
-    html.Label('Light Intensity Axis',style={'textAlign':'right'}),
-    dcc.RadioItems(
-        id='log_switch',
-        options=[
-            {'label': 'Linear', 'value': False},
-            {'label': 'Log', 'value': True}
-        ],
-        value=False,style={'textAlign':'right'}
+    html.Div(
+        children=[
+            html.Label('Light Intensity Axis',style={'textAlign':'right'}),
+            dcc.RadioItems(
+                id='log_switch',
+                options=[
+                    {'label': 'Linear', 'value': False},
+                    {'label': 'Log', 'value': True}
+                ],
+                value=False,style={'textAlign':'right'}
+            ),
+            dcc.Graph(id='logged_chart',figure=load_graph(is_logged=True))],
+        style = { 'height': '40px','margin': '0 auto'}
     ),
     
-    dcc.Graph(id='logged_chart',figure=load_graph(is_logged=True)),
-    #dcc.Graph(id='unlogged_chart',figure=load_graph(is_logged=False)),
 
 ])
 
