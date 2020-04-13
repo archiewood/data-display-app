@@ -56,7 +56,7 @@ app.layout = html.Div(children=[
                     {'label': 'Linear', 'value': False},
                     {'label': 'Log', 'value': True}
                 ],
-                value=False,style={'textAlign':'right'}
+                value=True,style={'textAlign':'right'}
             ),
             dcc.Graph(id='logged_chart',figure=load_graph(is_logged=True))],
         style = { 'height': '40px','margin': '0 auto'}
