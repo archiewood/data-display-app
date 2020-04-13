@@ -5,7 +5,9 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 import plotly.express as px
 
-def load_graph():
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+def load_graph(is_logged=False):
     csv = 'https://raw.githubusercontent.com/archiewood/lightlogger/master/lightlog.csv'
     avg_window=5
 
@@ -25,17 +27,48 @@ def load_graph():
     
     piv=df.pivot_table(index=['hour-decimal','date'],values='light_reading_moving_avg').reset_index()
     
-    fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0,100],title='Balcony Light Intensity')
-    
+    if is_logged:
+        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0.1,1000],title='Balcony Light Intensity',log_y=True)
+    else:
+        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0,100],title='Balcony Light Intensity')
+        
+        
+    return fig 
 
-    
-    return html.Div([dcc.Graph(figure=fig)])
 
-
-app = dash.Dash(__name__)
+app = dash.Dash(__name__,external_stylesheets=external_stylesheets)
 server = app.server
 
-app.layout = load_graph
+app.layout = html.Div(children=[
+    html.H1(children='Light on my Balcony',style={'textAlign': 'center'}
+           ),
+    html.Div(children='''
+        A little web app that shows when there is light on my balcony, as measured by an LDR using a Raspberry Pi.
+    
+    ''',style={'textAlign': 'center'}),
+    
+    html.Label('Light Intensity Axis',style={'textAlign':'right'}),
+    dcc.RadioItems(
+        id='log_switch',
+        options=[
+            {'label': 'Linear', 'value': False},
+            {'label': 'Log', 'value': True}
+        ],
+        value=False,style={'textAlign':'right'}
+    ),
+    
+    dcc.Graph(id='logged_chart',figure=load_graph(is_logged=True)),
+    #dcc.Graph(id='unlogged_chart',figure=load_graph(is_logged=False)),
+
+])
+
+@app.callback(
+    Output(component_id='logged_chart', component_property='figure'),
+    [Input(component_id='log_switch', component_property='value')]
+)
+def update_output_chart(log_choice):
+    return load_graph(is_logged=log_choice)
+
 
 
 if __name__ == '__main__':
