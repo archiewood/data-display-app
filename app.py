@@ -43,7 +43,9 @@ app.layout = html.Div(children=[
     html.H1(children='Light on my Balcony',style={'textAlign': 'left'}
            ),
     html.Div(children='''
-        A little web app that shows when there is light on my balcony, as measured by an LDR using a Raspberry Pi.
+        A little web app that shows when there is light on my balcony, as measured by an LDR using a Raspberry Pi.\n
+        You can also view the source code for the [visualisation](https://github.com/archiewood/data-display-app/)
+        and the [data collection](https://github.com/archiewood/lightlogger/)
     
     ''',style={'textAlign': 'left'}),
     
