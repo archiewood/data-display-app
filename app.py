@@ -31,10 +31,11 @@ def load_graph(is_logged=False):
     
     
     if is_logged:
-        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0.1,1000],title='Balcony Light Intensity',log_y=True,color_discrete_sequence=px.colors.sequential.Blues)
+        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0.1,1000],log_y=True,color_discrete_sequence=px.colors.sequential.Blues)
+        fig.update_layout(xaxis_title="Hour of Day",yaxis_title="Balcony Light Intensity",margin=dict(l=50,r=50,b=10,t=10),height=400)
     else:
-        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0,100],title='Balcony Light Intensity',color_discrete_sequence=px.colors.sequential.Blues)
-        
+        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0,100],color_discrete_sequence=px.colors.sequential.Blues)
+        fig.update_layout(xaxis_title="Hour of Day",yaxis_title="Balcony Light Intensity",margin=dict(l=50,r=50,b=10,t=10),height=400)
         
     return fig 
 
@@ -42,19 +43,18 @@ def load_graph(is_logged=False):
 app = dash.Dash(__name__,external_stylesheets=external_stylesheets)
 server = app.server
 
+app.title = "Light on my Balcony"
+
 app.layout = html.Div(children=[
-    html.H1(children='Light on my Balcony',style={'textAlign': 'left'}
+    html.H1(children='Light on my Balcony',style={'textAlign': 'left','margin': '0 auto','width': '95%'}
            ),
     dcc.Markdown(children='''
-        A little web app that shows when there is light on my balcony, as measured by an LDR using a Raspberry Pi.
-
-        You can also view the source code for the [visualisation](https://github.com/archiewood/data-display-app/)
-        and the [data collection](https://github.com/archiewood/lightlogger/).
-    
-    ''',style={'textAlign': 'left'}),
+        A web app that shows when there is sunlight on my balcony, as measured by an LDR using a Raspberry Pi. 
+    ''',style={'textAlign': 'left','margin': '0 auto','width': '95%'}),
     
     html.Div(
         children=[
+            dcc.Graph(id='logged_chart',figure=load_graph(is_logged=True)),
             html.Label('Light Intensity Axis',style={'textAlign':'right'}),
             dcc.RadioItems(
                 id='log_switch',
@@ -64,11 +64,13 @@ app.layout = html.Div(children=[
                 ],
                 value=True,style={'textAlign':'right'}
             ),
-            dcc.Graph(id='logged_chart',figure=load_graph(is_logged=True))],
-        style = { 'height': '40px','margin': '0 auto'}
-    ),
-    
-
+            
+            dcc.Markdown(children='''
+            The source code is on Github for the [visualisation](https://github.com/archiewood/data-display-app/)
+            and the [data collection](https://github.com/archiewood/lightlogger/).
+            ''')],
+        style = { 'margin': '0 auto','width': '95%'}
+    )
 ])
 
 @app.callback(
