@@ -32,10 +32,10 @@ def load_graph(is_logged=False):
     
     if is_logged:
         fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0.1,1000],log_y=True,color_discrete_sequence=px.colors.sequential.Blues)
-        fig.update_layout(xaxis_title="Hour of Day",yaxis_title="Balcony Light Intensity",margin=dict(l=50,r=50,b=10,t=10),height=400)
+        fig.update_layout(xaxis_title="Hour of Day",yaxis_title="Balcony Light Intensity",margin=dict(l=50,r=50,b=10,t=10),height=400,plot_bgcolor='rgb(230,230,230)')
     else:
         fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0,100],color_discrete_sequence=px.colors.sequential.Blues)
-        fig.update_layout(xaxis_title="Hour of Day",yaxis_title="Balcony Light Intensity",margin=dict(l=50,r=50,b=10,t=10),height=400)
+        fig.update_layout(xaxis_title="Hour of Day",yaxis_title="Balcony Light Intensity",margin=dict(l=50,r=50,b=10,t=10),height=400,plot_bgcolor='rgb(230,230,230)')
         
     return fig 
 
