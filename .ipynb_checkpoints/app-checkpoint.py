@@ -31,9 +31,9 @@ def load_graph(is_logged=False):
     
     
     if is_logged:
-        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0.1,1000],title='Balcony Light Intensity',log_y=True,color_discrete_sequence=px.colors.sequential.ice_r)
+        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0.1,1000],title='Balcony Light Intensity',log_y=True,color_discrete_sequence=px.colors.sequential.Blues)
     else:
-        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0,100],title='Balcony Light Intensity',color_discrete_sequence=px.colors.sequential.ice_r)
+        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0,100],title='Balcony Light Intensity',color_discrete_sequence=px.colors.sequential.Blues)
         
         
     return fig 
@@ -45,8 +45,11 @@ server = app.server
 app.layout = html.Div(children=[
     html.H1(children='Light on my Balcony',style={'textAlign': 'left'}
            ),
-    html.Div(children='''
+    dcc.Markdown(children='''
         A little web app that shows when there is light on my balcony, as measured by an LDR using a Raspberry Pi.
+
+        You can also view the source code for the [visualisation](https://github.com/archiewood/data-display-app/)
+        and the [data collection](https://github.com/archiewood/lightlogger/).
     
     ''',style={'textAlign': 'left'}),
     
