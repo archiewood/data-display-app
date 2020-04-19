@@ -26,11 +26,14 @@ def load_graph(is_logged=False):
     df['date']=df['timestamp'].str[:10]
     
     piv=df.pivot_table(index=['hour-decimal','date'],values='light_reading_moving_avg').reset_index()
+    #remove incomplete day's data
+    piv=piv[piv['date']>'2020-04-11']
+    
     
     if is_logged:
-        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0.1,1000],title='Balcony Light Intensity',log_y=True)
+        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0.1,1000],title='Balcony Light Intensity',log_y=True,color_discrete_sequence=px.colors.sequential.ice_r)
     else:
-        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0,100],title='Balcony Light Intensity')
+        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0,100],title='Balcony Light Intensity',color_discrete_sequence=px.colors.sequential.ice_r)
         
         
     return fig 
