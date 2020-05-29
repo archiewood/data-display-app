@@ -27,14 +27,17 @@ def load_graph(is_logged=False):
     
     piv=df.pivot_table(index=['hour-decimal','date'],values='light_reading_moving_avg').reset_index()
     #remove incomplete day's data
-    piv=piv[piv['date']>'2020-04-11']
+    #piv=piv[piv['date']>'2020-04-11']
+    #remove data older than 12 days ago
+    date_12_days_ago = (datetime.now() - timedelta(days=12)).date()
+    piv=piv[piv['date']> date_12_days_ago']
     
     
     if is_logged:
         fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0.1,1000],log_y=True,color_discrete_sequence=px.colors.sequential.thermal)
         fig.update_layout(xaxis_title="Hour of Day",yaxis_title="Balcony Light Intensity",margin=dict(l=50,r=50,b=10,t=10),height=400,plot_bgcolor='rgb(230,230,230)')
     else:
-        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0,100],color_discrete_sequence=px.colors.sequential.thermaL)
+        fig= px.line(piv,x='hour-decimal',y='light_reading_moving_avg',color='date',range_x=[9,21],range_y=[0,100],log_y=False, color_discrete_sequence=px.colors.sequential.thermaL)
         fig.update_layout(xaxis_title="Hour of Day",yaxis_title="Balcony Light Intensity",margin=dict(l=50,r=50,b=10,t=10),height=400,plot_bgcolor='rgb(230,230,230)')
         
     return fig 
