@@ -2,8 +2,11 @@ import pandas as pd
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import datetime as dt
 from dash.dependencies import Input, Output
 import plotly.express as px
+
+
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -29,7 +32,7 @@ def load_graph(is_logged=False):
     #remove incomplete day's data
     #piv=piv[piv['date']>'2020-04-11']
     #remove data older than 12 days ago
-    date_12_days_ago = (datetime.now() - timedelta(days=12)).date()
+    date_12_days_ago = (dt.datetime.now() - dt.timedelta(days=12)).date()
     piv=piv[piv['date']> date_12_days_ago]
     
     
