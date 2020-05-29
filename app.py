@@ -11,7 +11,7 @@ def load_graph(is_logged=False):
     csv = 'https://raw.githubusercontent.com/archiewood/lightlogger/master/lightlog.csv'
     avg_window=5
 
-    df = pd.read_csv(csv)
+    df = pd.read_csv(csv, error_bad_lines=False)
     df['date']=df['timestamp'].str[:10]
     df['time']=df['timestamp'].str[10:19]
     df['median']= df['light_reading'].rolling(avg_window).median()
