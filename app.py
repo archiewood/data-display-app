@@ -34,7 +34,7 @@ def load_graph(is_logged=False):
     #remove data older than 12 days ago
     #date_18_days_ago = (dt.datetime.now() - dt.timedelta(days=18)).strftime("%Y-%m-%d")
     #remove data older than 
-    piv=piv[piv['date']>= '2020-04-01']
+    piv=piv[piv['date']>= '2020-05-01']
     
     
     if is_logged:
